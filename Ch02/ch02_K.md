@@ -314,27 +314,28 @@
 
 # 2.3 네트워크 기기
 ## 📌 2.3.1 네트워크 기기의 처리 범위
-- 상위 계층을 처리하는 기기는 하위 계층을 처리할 수 있지만 반대는 불가
-- 애플리케이션 계층: L7 스위치
-- 인터넷 계층: 라우터, L3 스위치
-- 데이터 링크 계층: L2 스위치, 브리지
-- 물리 계층: NIC, 리피터, AP
+1. 애플리케이션 계층: L7 스위치
+2. 인터넷 계층: 라우터, L3 스위치
+3. 데이터 링크 계층: L2 스위치, 브리지
+4. 물리 계층: NIC, 리피터, AP
+   - 상위 계층을 처리하는 기기는 하위 계층을 처리할 수 있지만 반대는 불가
 
 ## 📌 2.3.2 애플리케이션 계층을 처리하는 기기
 ### 🔅 L7 스위치
 - 스위치: 여러 장비 연결, 데이터 통신 중재, 목적지가 연결된 포트로만 전기 신호를 보내 데이터를 전송하는 통신 네트워크 장비
 - L7 스위치 == 로드밸런서
-  - **로드밸런서**란? 서버의 부하를 분산하는 기기
+  - **로드밸런서**란? *서버의 부하를 분산*하는 기기
   - 클라이언트로부터 오는 요청들을 여러 서버로 나눔 &rarr; 시스템이 처리할 수 있는 트래픽 증가가 목적
   - URL, 서버, 캐시, 쿠키들을 기반으로 트래픽 분산
   - 서버에 장애 발생 시 &rarr; 트래픽 분산 대상에서 제외(정기적인 헬스 체크)
 - L4 스위치와 L7 스위치 차이
-  - L4 스위치는 인터넷 계층을 처리하는 기기로 IP와 포트를 기반으로 트래픽 분산
-  - L7 스위치는 IP, 포트 외에도 URL, HTTP 헤더, 쿠키 등을 기반으로 트래픽 분산
-  - L7 스위치를 이용한 로드밸런싱: ALB(Application Load Balancer) 컴포넌트
-  - L4 스위치를 이용한 로드밸런싱: NLB(Network Load Balancer) 컴포넌트
-- 헬스 체크
-  - 전송 주기와 재전송 횟수 등을 설정한 이후 반복적으로 서버에 요청을 보냄
+  1. L4 스위치
+     - 인터넷 계층을 처리하는 기기로 IP와 포트를 기반으로 트래픽 분산
+     - L4 스위치를 이용한 로드밸런싱: NLB(Network Load Balancer) 컴포넌트
+  2. L7 스위치
+     - IP, 포트 외에도 URL, HTTP 헤더, 쿠키 등을 기반으로 트래픽 분산
+     - L7 스위치를 이용한 로드밸런싱: ALB(Application Load Balancer) 컴포넌트
+- 헬스 체크: 전송 주기와 재전송 횟수 등을 설정한 이후 반복적으로 서버에 요청을 보냄
 
 ### 🔅 로드밸런서를 이용한 서버 이중화
 - 로드밸런서는 2대 이상의 서버를 기반으로 *가상 IP 제공*
@@ -348,8 +349,8 @@
    - 최소 경로로 패킷을 포워딩하는 라우팅을 하는 장비
 2. L3 스위치
    - L2 스위치의 기능과 라우팅 기능을 갖춘 장비
-   - 하드웨어 기반의 라우팅을 담당하는 장치
-   - ![image](https://user-images.githubusercontent.com/108309396/235428656-2e0ad9b5-0b62-4809-a762-625e15ae47c0.png)
+   - 하드웨어 기반의 라우팅을 담당하는 장치  
+  ![image](https://user-images.githubusercontent.com/108309396/235428656-2e0ad9b5-0b62-4809-a762-625e15ae47c0.png)
 
 ## 📌 2.3.4 데이터 링크 계층을 처리하는 기기
 1. L2 스위치
@@ -384,8 +385,8 @@
 - 컴퓨터와 컴퓨터 간의 통신은 IP 주소에서 ARP를 통해 MAC 주소를 찾아 MAC 주소를 기반으로 통신
    - ARP(Address Resolution Protocol)이란? IP주소로부터 MAC 주소를 구하는 프로토콜
    - ARP: Logical address(IP address) &rarr; Physical address(MAC address)
-   - RARP: Physical address(MAC address) &rarr; Logical address(IP address)
-   - ![image](https://user-images.githubusercontent.com/108309396/235431093-0746c02f-c79d-4ee7-bbe5-b9c7cc3d0eab.png)
+   - RARP: Physical address(MAC address) &rarr; Logical address(IP address)  
+    ![image](https://user-images.githubusercontent.com/108309396/235431093-0746c02f-c79d-4ee7-bbe5-b9c7cc3d0eab.png)
    - 1. 장치 A가 **ARP Request 브로드캐스트**를 보내 IP주소에 해당하는 MAC 주소를 찾는다
    - 2. 해당 주소에 맞는 장치 B가 **ARP reply 유니캐스트**를 통해 MAC 주소를 반환하는 과정을 거쳐 IP 주소에 맞는 MAC 주소를 찾게 됨
 
@@ -397,13 +398,13 @@
 - 홉바이홉(hop by hop) 통신: IP 주소를 통해 통신
   - 홉: 통신망에서 각 패킷이 여러 개의 라우터를 건너가는 모습
   - 각각의 라우터에 있는 라우팅 테이블의 IP를 기반으로 패킷 전달  
+    - 라우팅이란? IP주소를 찾아가는 과정
   ![image](https://user-images.githubusercontent.com/108309396/235551493-08a705c6-e9c5-4af3-a474-a49fd8b8e263.png)
-  - 라우팅이란? IP주소를 찾아가는 과정
 - 라우팅 테이블: 송신지에서 수신지까지 도달하기 위해 사용
   - 라우터에 들어가 있는 목적지 정보들과 목적지로 가기 위한 방법이 들어있는 리스트
   - 게이트웨이 / 모든 목적지에 대해 거쳐야 할 다음 라우터의 정보 를 가지고 있음
 - 게이트웨이: 서로 다른 통신망, 프로토콜을 사용하는 네트워크 간의 통신을 가능하게 하는 컴퓨터나 소프트웨어
-  - 서로 다른 네트워크 상의 통신 프로토콜을 변환
+  - 서로 다른 네트워크 상의 통신 프로토콜을 변환  
   ![image](https://user-images.githubusercontent.com/108309396/235551985-ef42641b-21b3-48dc-872f-30d9a07649e8.png)
 
 ## 📌 2.4.3 IP 주소 체계
@@ -417,17 +418,17 @@
 - 구분 비트: 맨 왼쪽 비트  
 ![image](https://user-images.githubusercontent.com/108309396/235552456-9ee763c2-5ee4-4cb5-a6a8-7072603181fb.png)
 - 네트워크 주소: 네트워크의 첫 번째 주소, 구별 주소
-- 브로드캐스트용 주소: 네트워크에 속해 있는 모든 컴퓨터에 데이터를 보낼 때 사용  
+- 브로드캐스트용 주소: 마지막 주소, 네트워크에 속해 있는 모든 컴퓨터에 데이터를 보낼 때 사용  
 ![image](https://user-images.githubusercontent.com/108309396/235552602-045ac6cd-532c-4424-a466-31ec8538b2c8.png)
 - But! 사용하는 주소보다 버리는 주소가 많음 &rarr; DHCP, IPv6, NAT로 해결
 
-### 🔅 DHCP
-- DHCP(Dynamic Host Configuration Protocol): IP 주소 및 기타 통신 매개변수를 자동으로 할당하기 위한 네트워크 관리 프로토콜
+### 🔅 DHCP(Dynamic Host Configuration Protocol)
+- DHCP: IP 주소 및 기타 통신 매개변수를 자동으로 할당하기 위한 네트워크 관리 프로토콜
 - 인터넷에 접속할 때마다 자동으로 IP 주소 할당 가능
 - 대부분의 가정용 네트워크에서 사용
 
-### 🔅 NAT
-- NAT(Network Address Translation): 패킷이 라우팅 장치를 통해 전송되는 동안 패킷의 IP 주소 정보를 수정하여 IP 주소를 다른 주소로 매핑하는 방법
+### 🔅 NAT(Network Address Translation)
+- NAT: 패킷이 라우팅 장치를 통해 전송되는 동안 패킷의 IP 주소 정보를 수정하여 IP 주소를 다른 주소로 매핑하는 방법
 - IPv4만으로는 많은 주소들을 감당X &rarr; NAT로 공인IP와 사설IP로 나누어 처리
 - NAT를 가능하게 하는 소프트웨어 &rarr; ICS, RRAS, Netfilter  
 - NAT을 사용하는 이유: 여러 대의 호스트가 하나의 공인 IP 주소를 사용하여 인터넷에 접속하기 위함

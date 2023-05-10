@@ -118,7 +118,7 @@
 ### 🔅 Locality Principle
 - 자주 사용하는 데이터를 기반으로 캐시 설정 &rarr; temporal locality(시간 지역성) | spatial locality(공간 지역성)
 - Temporal Locality: 최근 사용한 데이터에 다시 접근하려는 특성  
-- Spatial Locality: 최근 접근한 데이터를 이루고 있는 공간이나 그 가까운 공간에 접근하는 특성
+- Spatial Locality: 최근 접근한 데이터를 이루고 있는 공간이나 그 가까운 공간에 접근하는 특성  
 <img width="592" alt="image" src="https://github.com/Haaarimmm/TIL/assets/108309396/4f632ab4-d618-4494-a570-fe4b69625b40">
 
 ### 🔅 Cache: Hit and Miss
@@ -134,15 +134,138 @@
 - CPU의 레지스터와 주 메모리(RAM) 간에 데이터를 주고받을 때를 기준
 1. 직접 매핑(Direct Mapping)
    - 캐시 메모리의 각 슬롯이 메인 메모리에서 고유한 주소 범위를 가지도록 설정하는 방식
-   - 장점: 처리가 빠름, 캐시 크기를 작게 유지 가능 
+   - 메모리 주소와 캐시의 순서를 일치시킴
+   - 장점: 처리속도가 빠름, 캐시 크기를 작게 유지 가능 
    - 단점: 충돌 발생이 잦음
    - 충돌 &rarr; 캐시 메모리의 슬롯 수보다 많은 수의 메인 메모리 블록이 같은 캐시 메모리 슬롯에 매핑될 때 발생
    - ex) 4개의 슬롯을 가진 캐시 메모리에서 직접 매핑을 사용하는 경우
    - <img width="357" alt="image" src="https://github.com/Haaarimmm/TIL/assets/108309396/7cc15966-7ad5-4de6-93a4-d325d995ce27">
    - 충돌 발생 시, 캐시 메모리에서 해당 블록을 찾기 위해 다른 블록을 대체해야 함. 이 경우, 캐시 히트율&darr; 성능 저하 발생
 2. 연관 매핑(Associative Mapping)
-   - 순서를 일치시키지 않고 관련 있는 캐시와 메모리를 매핑
+   - 순서를 일치시키지 않고 관련 있는 캐시와 메모리를 매핑(어디든 저장 가능)
    - 이를 위해 캐시 메모리에는 *태그(Tag) 필드*가 추가되어 있으며, 이 태그 필드는 *메인 메모리 블록의 주소*를 저장함
-   - 장점: 충돌 적음, 캐시 히트율 증가(직접 매핑보다 더 많은 메모리 블록을 캐시 메모리에 저장할 수 있기 때문)
-   - 단점: 태그 검색을 통해 모든 블록을 탐색해야 하므로 속도 느림, 캐시 메모리 크기가 커지면 구현상의 복잡도가 증가
-   - 
+   - 장점: 충돌 적음, 캐시 히트율 증가(직접 매핑보다 더 많은 메모리 블록을 캐시 메모리에 저장할 수 있기 때문-필요한 캐시들 위주로 저장 가능)
+   - 단점: 태그 검색을 통해 모든 블록을 탐색해야 하므로 속도 느림, 태그 검색을 위한 추가적인 하드웨어 및 논리 회로가 필요하므로 구현이 복잡
+   - ex) 4개의 슬롯을 가진 캐시 메모리에서 연관 매핑을 사용하는 경우
+   - ![image](https://github.com/Haaarimmm/TIL/assets/108309396/342ebc79-e864-4418-a194-8607b1c18995)
+3. 직접 연관 매핑(Set Associative Mapping)
+   - 순서는 일치시키지만 집합을 둬서 저장하며 블록화
+   - 연관매핑에 비해 검색이 더 효율적이다
+   - ex) 메모리가 1~100이 있고 캐시가 1~10이 있을 때 캐시 1~5에 데이터 1~50을 무작위로 저장
+
+### 🔅 웹 브라우저의 캐시
+- 보통 사용자의 커스텀한 정보나 인증 모듈 관련 사항들을 웹 브라우저에 저장해서 추후 서버에서 요청할 때 보낼 때 쓰임
+1. 쿠키
+   - 만료기한이 있는 key-value 저장소
+   - 4KB까지 데이터 저장 가능
+   - `same site` 옵션을 `strict`로 저장하지 않으면 다른 도메인에서 요청했을 때 자동 전송됨
+   - 보통 서버에서 만료기한을 정함
+2. 로컬 스토리지
+   - 만료기한이 없는 key-value 저장소
+   - 10MB까지 저장 가능
+   - 웹 브라우저를 닫아도 유지됨
+   - 도메인 단위로 저장, 생성
+   - 클라이언트에서만 수정 가능
+3. 세션 스토리지
+   - 만료기한이 없는 key-value 저장소
+   - 5MB까지 저장 가능
+   - 탭 단위로 세션 스토리지 생성
+   - 탭 닫으면 데이터도 삭제됨
+   - 클라이언트에서만 수정 가능
+
+### 🔅 데이터베이스의 캐싱 계층
+- 메인 DB 위헤 redis 데이터베이스 계층을 '캐싱 계층'으로 두면 &rarr; 성능 향상 가능   
+![image](https://github.com/Haaarimmm/TIL/assets/108309396/74e1948d-07d8-402e-8bd1-f30a667aac95)
+
+
+## 📌 3.2.2 메모리 관리
+### ✔️ 가상 메모리(Virtual Memory)
+- 컴퓨터가 실제로 이용 가능한 메모리 resource를 추상화하는 것  
+![image](https://github.com/Haaarimmm/TIL/assets/108309396/0fcb5aaa-c5a5-42f1-ba23-7ba485ed62f2)
+- 가상 주소(logical address), 실제 주소(physical address)
+- logical address는 MMU(Memory Management Unit)에 의해 physical address로 변환됨
+- logical address와 physical address가 매핑되어 있고 프로세스의 주소 정보가 들어있는 Page Table로 관리됨
+  - 속도 향상을 위해서 TLB(Translation Lookaside Buffer)를 사용
+  - TLB? 메모리와 CPU 사이에 있는 주소 변환을 위한 캐시. 페이지 테이블에 있는 리스트를 보관하며 CPU가 페이지 테이블까지 가지 않도록 하는 캐시 계층
+
+### 🔅 스와핑(Swapping)
+- 가상 메모리에는 존재하지만 실제 메모리인 RAM에는 없는 데이터나 코드에 접근할 경우 page fault가 발생
+- 스와핑: page fault를 방지하기 위해 당장 사용하지 않는 영역을 하드디스크로 옮겨 필요할 때 다시 RAM으로 불러와 RAM을 효과적으로 관리하는 것
+
+### 🔅 페이지 폴트(Page fault)
+- 프로세스의 주소 공간에는 존재 but RAM에는 없는 데이터에 접근했을 경우 발생
+1. CPU는 physical memory를 확인하여 해당 page가 없으면 trap을 발생시켜 OS에 알림
+2. OS는 CPU의 동작을 잠시 멈춤(interrupt)
+3. OS는 page table을 확인하여 가상 메모리에 페이지가 존재하는지 확인하고, 없으면 프로세스를 중단하고 physical memory에 비어있는 프레임이 있는지 찾음
+4. physical memory에도 없다면 스와핑 발동
+5. 비어 있는 프레임에 해당 페이지를 로드하고, 페이지 테이블을 최신화
+6. CPU 다시 시작
+
+### 🔅 Page & Frame
+- Page: 가상 메모리를 사용하는 최소 크기 단위
+- Frame: 실제 메모리를 사용하는 최소 크기 단위
+
+### ✔️ 스레싱(Thrashing)
+- 메모리의 page fault rate가 높은 것
+- 컴퓨터의 심각한 성능 저하 초래  
+![image](https://github.com/Haaarimmm/TIL/assets/108309396/e9a0ab99-68d2-4bb6-9e3a-1c1d4bf922c8)
+- 메모리에 너무 많은 프로세스가 동시에 올라가게 되면 스와핑이 많이 일어나서 스레싱이 발생
+- page fault 발생 &rarr; CPU 이용률 낮아짐 &rarr; OS가 CPU의 가용성을 높이기 위해 더 많은 프로세스를 메모리에 올림
+- 해결 방안) 메모리&uarr;, HDD를 SDD로 바꾸기, OS의 작업세트나 PFF
+
+### 🔅 작업 세트(working set)
+- 프로세스의 locality를 통해 결정된 페이지 set를 만들어서 미리 메모리에 로드
+- 탐색에 드는 비용을 줄일 수 있고 스와핑&darr;
+
+### 🔅 PFF(Page Fault Frequency)
+- 페이지 폴트 빈도를 조절하는 방법
+- 상한선과 하한선을 만듦
+- 상한선에 도달하면 페이지를 늘리고, 하한선에 도달하면 페이지를 줄임
+
+### ✔️ 메모리 할당(Memory Allocation) - 연속 할당
+- 메모리에 프로그램을 할당할 때는 시작 메모리 위치, 메모리의 할당 크기를 기반으로 할당   
+![image](https://github.com/Haaarimmm/TIL/assets/108309396/b6eec895-6189-4e57-b6f8-477f9bb0048a)
+   - 고정 분할 방식(fixed partition allocation): 메모리를 미리 나누어 관리하는 방식. 융통성이 없고 내부 단편화(internal fragmentation) 발생
+   - 가변 분할 방식(variable partition allocation): 매 시점 프로그램의 크기에 맞게 동적으로 할당. 외부 단편화(external fragmentation) 발생
+
+### 🔅 가변 분할 방식-  first fit, best fit, worst fit, next fit
+<img width="605" alt="A917829E-25F7-4C21-89B8-82E3418B0FD9" src="https://github.com/Haaarimmm/TIL/assets/108309396/4e299038-aece-47d9-a77b-e94de6592bd5">
+
+### 🔅 내부 단편화 & 외부 단편화
+- Internal Fragmentation: 할당된 메모리 영역 내부에서 낭비되는 메모리 공간
+  - 메모리 할당 단위가 고정되어 있고, 프로세스의 크기가 할당 단위보다 작은 경우에 발생
+- External Fragmentation: 메모리 공간 내에서 사용 가능한 공간이 작아져서 발생하는 문제
+  - 메모리 할당 단위와 프로세스의 크기와는 별개의 문제이며, 프로세스를 할당하고 해제할 때마다 발생
+
+
+### ✔️ 메모리 할당(Memory Allocation) - 불연속 할당
+1. Paging
+   - 동일한 크기의 page로 나누어 메모리의 서로 다른 위치에 프로세스를 할당
+   - 홀의 크기가 불균일한 문제가 사라짐 but 주소 변환이 복잡해짐
+2. Segmentation
+   - 페이지 단위가 아닌 segment 단위로 나누는 방식
+   - 코드나 데이터를 기반으로 나눌 수도 있고 함수 단위로 나눌 수도 있음
+   - 공유와 보안 측면에서 좋음 but 홀 크기가 균일하지 않은 문제 발생
+3. Paged Segmentation
+   - 공유나 보안을 의미 단위의 segment로 나누고, physical memory는 페이지로 나누는 것
+
+### ✔️ 페이지 교체 알고리즘
+- 페이지 교체 알고리즘을 기반으로 스와핑이 일어남(스와핑은 많이 일어나면 X)
+1. 오프라인 알고리즘
+   - 먼 미래에 참조되는 페이지와 현재 할당하는 페이지를 바꾸는 알고리즘
+   - but 미래에 사용되는 프로세스를 알 수 없기에 사용 불가
+   - 다른 알고리즘과의 성능 비교에 쓰임
+2. FIFO(First In First Out)
+   - 가장 먼저 온 페이지를 교체 영역에 먼저 놓는 방법
+3. LRU(Least Recently Used)
+   - 참조가 가장 오래된 페이지를 바꿈
+   - 오래된 것을 파악하기 위해 각 페이지마다 counter, stack을 두어야 함
+   - ![image](https://github.com/Haaarimmm/TIL/assets/108309396/9c9d8f05-e3d3-4cfe-b61a-7acbffee8ad1)
+   - 구현 시 Hash Table 또는 이중 연결 리스트로 구현
+4. NUR(Not Used Recently)
+   - == clock 알고리즘
+   - 0과 1을 가진 비트를 두고 1은 최근에 참조, 0은 참조되지 않음을 의미
+   - 시계 방향으로 돌면서 0을 찾은 순간 해당 프로세스를 교체하고 1로 바꿈
+   - ![image](https://github.com/Haaarimmm/TIL/assets/108309396/5af2d58f-6c98-4303-9597-6a1a52ed9a81)
+5. LFU(Least Frequently Used)
+   - 가장 참조 횟수가 적은 페이지를 교체

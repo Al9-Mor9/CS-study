@@ -46,7 +46,13 @@ public interface Product{
 }
 
 public class Car implements Product{
-    @Override
+    @Override    
+    public static Car getInstance() {
+        if (instance == null) {
+            instance = new Car();
+        }
+        return instance;
+    }
     public void func(){
         //...
     }
@@ -62,7 +68,9 @@ public class Boat implements Product{
 public class ProductFactory{
     public Product getProduct(String productType){
         if (productType == null) return null;
-        if (productType.equals("Car")) return new Car();
+        if (productType.equals("Car"))
+        instance = Car.getInstance();
+        return instance;
         if (productType.equals("Boat")) return new Boat();        
     }
 }
@@ -189,7 +197,7 @@ MVC의 컨트롤러가 View Model로 바뀐 패턴
 
 ### 1.2.2 객체지향 프로그램
 
-객체들의 집합으로 프로그래밍의 상호작용을 표현. 데[이터를 객체로 취급, 객체 내부의 메서드를 활용하는 방식.
+객체들의 집합으로 프로그래밍의 상호작용을 표현. 데이터를 객체로 취급, 객체 내부의 메서드를 활용하는 방식.
 
 + 특징(:star:)
   + 추상화
@@ -206,13 +214,38 @@ MVC의 컨트롤러가 View Model로 바뀐 패턴
     + 어떤 로직에 관한 클래스는 오직 그 클래스에만 관련되어야 함.
   + **O**pen Closed Principle, 개방-폐쇄 원칙
     + 코드를 확장하기는 쉬워야 하지만, 기존의 코드가 변경되는 일은 적어야 함
+
+    
+
   + **L**iscov Substitution Principle, 리스코프 치환 원칙
-    + 프로개름의 객체는 프로그램의 정확성을 깨뜨리지 않으면서도 하위 타입의 인스턴스로 바뀔 수 있어야 함.
+    + 프로개름(PYS식 명명)의 객체는 프로그램의 정확성을 깨뜨리지 않으면서도 하위 타입의 인스턴스로 바뀔 수 있어야 함.
     + 부모 객체에 자식 객체를 넣어도 문제 없어야 함
   + **I**nterface Segregation Principle, 인터페이스 분리 원칙
     + 하나의 일반적인 인터페이스보다, 여러 개의 구체적인 인터페이스를 만들 것.
   + **D**ependency Inversion Principle, 의존 역전 원칙
     + 상위 계층은 하위 계층의 구현에 의존하지 않아야 함.
+
+    상호의존되는 클래스가 있나?
+    
+    인터페이스 동물 걷먹싸 
+    -> 구현체       어라라 구른다.
+    개발과정에 있어서 역전된다?
+    변하기 쉬운 것에 영향을 덜 받는
+
+    네발 두발 걷
+    모든 동물은 네발로 걸어야 하지
+    철학적 접근
+
+    객체지향 스터디 ㄷㄷ;
+    스터디 중독자 하림의 관심을 끄는 대박 스터디;
+    AI 스터디...
+
+
+    
+
+    역전되는 상황이 발생 하지말라고 넣은거아님?
+
+    
 
 ### 1.2.3 절차형 프로그래밍
 

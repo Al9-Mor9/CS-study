@@ -117,7 +117,8 @@ BCNF - 후보키가 아닌 결정자의 함수 종속 제거
 
 ![ㅁ](./src/%EC%88%9C%EB%A1%9D3.png)
 
-
+[정규형 위키](https://ko.wikipedia.org/wiki/%EC%A0%9C1%EC%A0%95%EA%B7%9C%ED%98%95
+)
 
 
 

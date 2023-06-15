@@ -5,7 +5,6 @@
 - 운영체제(Operating System, OS)란?
     - 컴퓨터 하드웨어 바로 위에 설치되어 사용자 및 다른 모든 소프트웨어와 하드웨어를 연결하는 소프트웨어 계층
         
-        ![untitled](src_H/Untitled.png)
         
 - 협의의 운영체제(커널)
     - 운영체제의 핵심 부분으로 메모리에 상주하는 부분
@@ -88,7 +87,7 @@ DOS(Disk Operating System)
 
 ### 운영체제의 구조
 
-![Untitled](1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%80%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%B4%20%E1%84%89%E1%85%A9%E1%84%80%E1%85%A2%202b680f069fb7485cbe9cbb2b58f188e9/Untitled.png)
+![Untitled](src_H/Untitled.png)
 
 - 프로세스 관리
     - 프로세스의 생성과 삭제

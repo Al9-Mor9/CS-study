@@ -67,3 +67,14 @@ S-box를 공유하는 E-box가 여럿 있는 경우 **Race  Condition**의 가�
 
 - n개의 프로세스가 공유 데이터를 동시에 사용하고자 하는 경우, 각 프로세스의 code segment에는 공유 데이터에 접근하는 코드인 ***critical section***이 존재
 - 한 프로세스가 critical section에 있을 때, 다른 모든 프로세스는 critical section에 들어갈 수 없어야 한다.
+
+### 프로그램적 해결법의 충족 조건
+
+- Mutual Exclusion
+    - 한 프로세스가 critical section 부분을 수행 중이면 다른 모든 프로세스들은 그들의 critical section에 들어가면 안 된다.
+- Progress
+    - 아무도 critical section에 있지 않은 상태에서 critical section에 들어가고자 하는 프로세스가 있으면 들어가게 해줘야 한다
+- Bounded Waiting
+    - 프로세스가 critical section에 들어가려 요청한 후로부터 그 요청이 허용될 때까지 다른 프로세스들이 critical section에 들어가는 횟수에 한계가 있어야 한다.
+
+☝️ 단, 모든 프로세스의 수행 속도는 0보다 크다고 가정하고, 프로세스들 간의 상대적 수행 속도는 가정하지 않는다.

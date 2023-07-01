@@ -221,7 +221,7 @@ runtime bind으로 메모리 위치가 실행중에도 변경 될 수 있어야 
 
 ### Noncontiguous Allocation
 
-#### Paging
+### Paging
 
 물리적 메모리 공간은 page frame
 프로세스는 page로 짤라놓음.
@@ -279,14 +279,100 @@ p1, p2 , d
 
 특정 페이지 테이블을 안 만들어도 되기 때문에.. 공간 이득.
 
+#### Multilevel Paging and Performance
 
-#### Segmetation
+Address space가 더 커지면 다단계 페이지 테이블 필요
+각 단계의 페리지 테이블이 메모리에 존재하므로 logical address의 physical address 변환에 더 많은 메모리 접근 필요
+
+TLB를 통해 메모리 접근 시간을 줄일 수 있음. 
+
+TLB hit ratio가 매우 높으면 effective하게 메모리 접근 할 수 있다. 
+
+TLB에 주소변환이 되고 안되고 차이가 크다. 대신 TLB hit ratio가 높으면 평균값이 낮아짐. 
+
+#### valid(v) / Invalid(i) vit in a page Table
+
+사실 페이지 테이블에는 vi를 표시하는 bit가 있음. 
+
+모든 엔트리가 다 만들어져야한다는게 뭔소리지?
+사용하지 않는 페이지거나 backing store에 있는 경우 , 올라와 있지 않은경우 invalid하게 해둠.
+
+#### Memory protection bit
+
+page에 대한 접근 권한(read/write/read-only)
+접근 권한보다는 연산에 대한 권한인듯.
+
+#### Inverted Page Table 
+
+- page table이 매우 큰 이유.
+    모든 프로세스 별로 그 논리 주소에 대응하는 모든 페이지에 대해 page table entry가 존재
+    대응하는 page가 메모리에 있든 아니든 간에 page table에는 entry로 존재
+
+원래는 페이지마다 페이지 테이블 존재.
+
+근데 인버티드는 페이지테이블은 하나 존재. 물리적 메모리 기준으로 페이지 테이블이 동작하는 원리.
+
+물리 주소를 보고 논리 주소를 찾는 건데.. 뭐냐
+
+원래는 바로 찾는데 전부 탐색해야됨.
+pid와 page로 page table을 모두 찾음.
+
+페이지 테이블이 하나만 존재해서 공간은 이득. 하지만 시간 복잡도가 늘음.
+-> associatable register로 parrelell하게 ..
+
+
+#### Shared Page
+
+공유가능한 코드는 같은 프레임으로 맵핑 시킬 수 있다.
+Re-entrant code, 
+read-only로 해야함.
+physical address 뿐만 아니라 동일한 logical address space를 가져야함 -> ?
+
+
+private code and data
+각 메모리는 독자적으로 메모리에 올려야함.
+
+
+### Segmetation
 
 프로그램 주소 공간을 같은 크기로 자르는게 아니라 의미로 자름.
 코드, 데이터, 스택 처럼. 더 잘게 자를 수 도 있음. 
 함수를 세그먼트로 자르거나.
 
 세그먼트 단위로 주소변환. 
+
+논리 주소는 segment-number, offset으로 구성
+
+- Segment table 
+
+base는 시작위치. 그리고 offset d를 더해주면 구할 수 있다. 
+limit는 segment의 길이를 측정. 
+
+stbr - segment-table base register
+ 물리적 메모리에서의 segment의 위치
+stlr - segment-table length register
+ 프로그램이 사용하는 segment의 수
+
+table로 인한 메모리 낭비는 segmentation 이 paging보다 낫다.
+segmentation은 의미 단위로 자르기때문에 그렇게 많지 않음. 
+
+
+
+#### Segmentation with paging
+
+
+segment-table entry가 segment의 base address를 가지고 있는 것이 아니라 segment를 구성하는 page table의 base address를 가지고 있음.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

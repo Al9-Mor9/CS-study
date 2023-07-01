@@ -213,7 +213,6 @@ Block/wakeup overhead vs Critical section 길이
     근데 길면 낭비가 심해짐. 왜냐 time 기준으로 자르니까 
 
 
-
 Counting semaphore - 자원 카운팅에 씀
 Binary semaphore - mutual exclusion에 씀
 

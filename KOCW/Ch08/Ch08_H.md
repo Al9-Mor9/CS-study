@@ -347,8 +347,140 @@ Internal fragmentation(내부조각)
         결과적으로 주소변환을 위해 28ns만 소요
         
 
+### Valid(v) / Invalid(i) Bit in a Page Table
+
+![Untitled](src_H/Untitled%2013.png)
+
+valid - invalid bit의 상태에 따라 실제로 올라와 있는지 아닌지를 알 수 있음
+
+### Memory Protection
+
+- Page table의 각 entry마다 아래의 bit를 둔다
+    - Protection bit
+        - page에 대한 접근 권한(read / write / read-only)
+        - ***접근”권한”에 관련된 비트***
+    - Valid - invalid bit
+        - valid는 해당 주소의 frame에 그 프로세스를 구성하는 유효한 내용이 있음을 뜻함(접근 허용)
+        - invalid는 해당 주소의 frame에 유효한 내용이 없음*을 뜻함(접근 불허)
+            - 프로세스가 그 주소 부분을 사용하지 않는 경우
+            - 해당 페이지가 메모리에 올라와 있지 않고 swap area에 있는 경우
+
+### Inverted Page Table(역방향 페이지 테이블)
+
+- page table이 매우 큰 이유
+    - 모든 process별로 그 logical address에 대응하는 모든 page에 대해 page table entry 존재
+    - 대응하는 page가 메모리에 있든 아니든 간에 page table에는 entry로 존재
+- Inverted page table
+    - Page frame 하나당 page table에 하나의 entrty를 둔 것(system-wide)
+    - 각 page table entry는 각각의 물리적 메모리의 page frame이 담고 있는 내용 표시(process-id, process의 logical address)
+- 단점
+    - 테이블 전체를 탐색해야 함
+- 조치
+    - associative register 사용(비쌈)
+
+### Inverted Page Table Architecture
+
+![Untitled](src_H/Untitled%2014.png)
+
+### Shared Page
+
+- Shared Page
+    - Re-entrant Code(=Pure code)
+    - read-only로 하여 프로세스 간에 하나의 code만 메모리에 올림
+    - Shared code는 모든 프로세스의 logical address space에서 동일한 위치에 있어야 함
+- Private code and data
+    - 각 프로세스들은 독자적으로 메모리에 올림
+    - Private data는 logical address space의 아무 곳에 와도 무방
+
+### Shared Page Example
+
+![Untitled](src_H/Untitled%2015.png)
+
+만약 같은 코드 부분을 가지고 돌린다? - 그럼 공유할 수 있기 때문에 Shared code라 함
+
+이 때는 한 카피만 올릴 수 있다
+
+***즉, 공유 가능한 코드는 같은 frame으로 올려 copy를 막을 수 있다***
+
 ### Segmentation
 
-프로그램의 주소공간을 같은 크기가 아닌 의미가 있는 크기로 자름. 주소 공간이라는게 code, data, stack이 있는데, 이를 기준으로 크게 자르고 각각의 세그먼트를 필요시 물리적인 메모리의 다른 위치에 올리는 기법
+- **프로세스를 구성하는 주소공간을 의미단위로 자르는 기법**
+- 프로그램은 의미 단위인 여러 개의 segment로 구성
+    - 작게는 프로그램을 구성하는 함수 하나하나를 세그먼트로 정의
+    - 크게는 프로그램 전체를 하나의 세그먼트로 정의 가능
+    - 일반적으로 code, data, stack부분이 하나씩의 세그먼트로 정의됨
+- ~~Segment는 다음과 같은 logical unit들임~~
+    - ~~main(), function, global variables, stack, symbol table, arrays~~
 
-더 작게 자를 수도 있고 여러 기준이 존재함(segment(의미)를 기준으로 잘랐기 때문에 크기또한 균일하지 않음)
+### Segmentation Architecture
+
+- Logical address는 다음의 두 가지로 구성
+    - segment-number
+    - offset
+- Segment table
+    
+    `세그먼트별로 서로 다른 물리적인 메모리에 올리기 위해 세그먼트별로 주소변환이 필요함`
+    
+    - each table entry has :
+        - base - starting physical address of the segment
+        - limit - length of the segment
+        
+        `두 레지스터는 세그먼트 테이블의 시작 위치를 나타내기 위해 하나, 세그먼트 길이를 나타내기 위해 하나`
+        
+- Segment-table base register(STBR)
+    - 물리적 메모리에서의 segment table의 위치
+- Segment-table length register(STLR)
+    - 프로그램이 사용하는 segment의 수
+        - segment number ***s*** is legal if ***s*** < STLR
+
+### Segmentation Hardware
+
+![Untitled](src_H/Untitled%2016.png)
+
+설명 - <segmentation에 의한 주소변환> - CPU가 논리 주소를 주게 되면 이거를 두 부분으로 나눔(seg번호, offset(d)) → 세그먼트 테이블의 시작위치에서 s만큼 떨어진 위치를 가면 이 세그먼트가 물리적 메모리에 어떤 번지에 저장되어 있는지를 나타냄(base). 이 때, 세그멘트 테이블은 페이지 테이블과 다르게 엔트리에 두 가지의 정보를 가지고 있음. physical memory상의 시작 위치 외에 하나를 더 가지고 있는데, 그게 limit = 세그먼트의 길이. 세그멘테이션 기법은 의미단위로 자르기 때문에 세그먼트의 길이가 균일하지 않을 수 있어서 길이가 얼마인지 세그먼트 테이블에 같이 가지고 있음. 그래서 주소 변환을 할 때 두 가지를 체크해 봐야함(1. CPU에 주어진 주소에서 세그먼트 번호가 유효한지?(= s < segment table length register), 2. 세그먼트의 길이보다 오프셋(d) 값이 더 크진 않은가?(= d < limit)) → 정상적이라면 주소변환을 하는데 그건 세그먼트 시작 위치에 오프셋을 더해서 나옴 = base만큼 떨어진 곳에서 오프셋이 시작하게 되고, 거기서부터 d만큼 떨어진 위치에 원하는 내용이 들어가게 됨
+
+페이징하고 비슷하지만 다름. 페이징 기법은 페이지가 균일해서 오프셋의 크기가 페이지 크기에 따라 결정. 세그멘테이션 기법에서는 세그먼트 길이는 오프셋으로 표현할 수 있는 비트수 이상은 불가능. 그리고 페이징에서는 시작 주소가 프레임 번호로 주어지면 되었었는데, 세그멘테이션에서는 세그먼트 크기가 다 달라서 세그먼트가 어디서 시작되는지 정확하게 매길 필요가 있다
+
+### Segmentation Architecture(Cont.)
+
+- Protection(장점이 많음)
+    - **의미단위로 쪼개기 때문에 의미단위로 일을 할 때는 매우 좋다!**
+    - 각 세그먼트 별로 protection bit가 있음
+    - Each entry
+        - Valid bit = 0 ⇒ illegal segment
+        - Read / Write / Execution 권한 bit
+- Sharing(장점이 많음)
+    - Shared segment
+    - same segment number
+    
+    **segment는 결국 의미 단위이기 때문에 공유(sharing)와 보안(protection)에 있어 paging보다 효과적**
+    
+- Allocation(단점이 많음)
+    - first fit / best fit
+    - external fragmentation(외부 조각) 발생
+    
+    segment의 길이가 동일하지 않아 가변 분할 방식에서와 같은 문제점 발생
+    
+
+### Example of Segmentation
+
+![Untitled](src_H/Untitled%2017.png)
+
+먼저 알아야 할게 세그멘테이션 주소변환 기법 자체는 페이징과 크게 차이는 없음. 하지만 생각해봐야 할게 페이징 테이블의 갯수는 굉장히 많음. 테이블을 위한 메모리 낭비가 심하지만, 세그먼트기법의 경우 5개 이런식으로 된다. 그래서 비교하라고 하면 위에서처럼 의미단위로 처리해야 하는 일에서는 세그먼트가 더 좋긴 함. 반면에 동일한 크기 단위로 잘랐을 때가 좋을때도 있긴함. 페이징은 홀이 생기지 않음. 
+
+그림 설명 : 프로그램을 구성하는 세그먼트가 5개, 세그먼트 테이블이 있음. segment 0의 경우 세그먼트 테이블에서 보면 1400이고, limit는  1000이기 때문에 1400 ~ 2400까지 들어가있음. 이런식으로 세그먼트별로 올라가거나 내려가 있을 수 있다
+
+### Sharing of Segments
+
+![Untitled](src_H/Untitled%2018.png)
+
+그림은 세그먼트를 서로다른 두 개의 프로세스가 공유하는 예제. 같은 역할을 하고, 세그먼트 번호도 같아야 하고, 같은 위치를 가르키고 있어야 공유 가능. 반대로 data1, data2를 다루는 세그먼트들은 다르게 저장됨
+
+### Segmentation with Paging(=Paged Segmentation)
+
+- pure segmentation과의 차이점
+    - segment-table entry가 segment의 base address를 가지고 있는 것이 아니라 segment를 구성하는 page table의 base address를 가지고 있음
+
+![Untitled](src_H/Untitled%2019.png)
+
+- 걍 두개 합친거 정도로 생각하고 넘어가고싶음

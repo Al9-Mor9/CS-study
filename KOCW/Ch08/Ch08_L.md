@@ -231,12 +231,12 @@ mmu에 의해 주소변환이 너무 복잡해짐. address binding이 복잡.
 process의 virtual memory를 동일한 사이즈의 page 단위로 나눔. 
 일종의 배열 page table도 생김. 
 
-external fragmentation은 안생김. 
+external fragmentation은 안 생김. 
 짜투리는 internal fragmentation은 생길 수 있음. 근데 영향력이 크진 않음.
 
 cpu가 논리 주소를 주게되면, 
 페이지 번호, 페이지 오프셋. 
-페이지 오프셋은 내부에서의 상대적인 위치를 뜻함. 그대로 써도 된담.
+페이지 오프셋은 내부에서의 상대적인 위치를 뜻함. 그대로 써도 된담. 
 
 페이지 번호를 통해서 앞부분만 맞추면 됨.
 
@@ -251,7 +251,7 @@ page table은 main memory에 상주
 page-table base resister(PTBR) 은 페이지 테이블을 가리킴
 page-tabe length register (PTLR)은 테이블 크기를 보관
 메모리 접근 연산에 2번의 메모리 접근이 필요
-    associative register 혹은 translation look-aside buffer(TLB)라 불리는 고속의 lookup hardware cache 사용.
+    associative register 혹은 translation look-aside buffer(TLB)라 불리는 고속의 lookup hardware cache 사용. 
     page table에서 빈번하게 사용되는 일부 entry를 TLB에 caching해서 사용. 
     
     TLB에서 주소변환이 가능한지 검색.
